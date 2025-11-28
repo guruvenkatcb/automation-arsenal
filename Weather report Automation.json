@@ -1,0 +1,523 @@
+{
+  "name": "Weather report Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "LOCATION SELECTER",
+        "formDescription": "Select a unique location from the list.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Destination",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "chicago"
+                  },
+                  {
+                    "option": "meami"
+                  },
+                  {
+                    "option": "new york"
+                  },
+                  {
+                    "option": "Phoienx"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -400,
+        480
+      ],
+      "id": "92c430c2-ff4c-4a48-a317-6a65eec1a290",
+      "name": "On form submission",
+      "webhookId": "99afc2df-add5-4aff-966e-9f45c9ff618f"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Destination }}",
+                    "rightValue": "chicago",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "cde7c2d5-26cc-4a42-8b1d-b1fcac3b97d8"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "chicago"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fa93fcb5-7585-44a8-bab3-810071248778",
+                    "leftValue": "={{ $json.Destination }}",
+                    "rightValue": "meami",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "meami"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ca4100e5-fab7-4516-b9f9-fd2855b211ce",
+                    "leftValue": "={{ $json.Destination }}",
+                    "rightValue": "new york",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "new york"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9d84aa76-3905-4163-92f5-a660bdfccf85",
+                    "leftValue": "={{ $json.Destination }}",
+                    "rightValue": "Phoienx",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Phoienx"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -176,
+        464
+      ],
+      "id": "7e7768df-97ed-4c0a-95f3-290f1b442aab",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05c427db-2543-4b5d-b49a-63eed8adf780",
+              "name": "Lattitude",
+              "value": "41.88",
+              "type": "string"
+            },
+            {
+              "id": "731128bb-63f8-4f2b-a10b-4a67e296200c",
+              "name": "Longtitude",
+              "value": "-87.63",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        304
+      ],
+      "id": "8736a237-19e4-413f-aee9-ff013b76dea9",
+      "name": "Chicago co-ordinates"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05c427db-2543-4b5d-b49a-63eed8adf780",
+              "name": "Lattitude",
+              "value": "25.76",
+              "type": "string"
+            },
+            {
+              "id": "731128bb-63f8-4f2b-a10b-4a67e296200c",
+              "name": "Longtitude",
+              "value": "-80.19",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        432
+      ],
+      "id": "19171dd9-d0a1-4f8b-bd40-33ef900a6f31",
+      "name": "miami co-ordinates1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05c427db-2543-4b5d-b49a-63eed8adf780",
+              "name": "Lattitude",
+              "value": "40.71",
+              "type": "string"
+            },
+            {
+              "id": "731128bb-63f8-4f2b-a10b-4a67e296200c",
+              "name": "Longtitude",
+              "value": "-74.00",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        592
+      ],
+      "id": "a8974fbf-13b9-440a-840b-d6ae655180e3",
+      "name": "New york co-ordinates2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05c427db-2543-4b5d-b49a-63eed8adf780",
+              "name": "Lattitude",
+              "value": "33.44",
+              "type": "string"
+            },
+            {
+              "id": "731128bb-63f8-4f2b-a10b-4a67e296200c",
+              "name": "Longtitude",
+              "value": "-112.07",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        688
+      ],
+      "id": "f399fd30-b71c-41e3-82c6-eb18d1dc690f",
+      "name": "Phonyix co-ordinates3"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.open-meteo.com/v1/forecast?latitude={{ $json.Lattitude }}&longitude={{ $json.Longtitude }}&hourly=temperature_2m&temperature_unit=fahrenheit",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        672,
+        512
+      ],
+      "id": "3524a2dd-2198-4236-979e-3cb4864957ec",
+      "name": "Weather pull"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the first item from the input data (assuming array structure)\nconst weatherData = $input.all()[0].json;\n\n// Get today's date in YYYY-MM-DD format\nconst today = new Date();\nconst todayDate = today.toISOString().split('T')[0];\n\n// Extract the hourly data\nconst hourlyData = weatherData.hourly;\nconst timeArray = hourlyData.time;\nconst tempArray = hourlyData.temperature_2m;\n\n// Find the start and end indices for today's data\nlet todayStartIndex = -1;\nlet todayEndIndex = -1;\n\nfor (let i = 0; i < timeArray.length; i++) {\n  const datePart = timeArray[i].split('T')[0];\n  \n  if (datePart === todayDate) {\n    if (todayStartIndex === -1) {\n      todayStartIndex = i;\n    }\n    todayEndIndex = i;\n  } else if (todayStartIndex !== -1) {\n    // We've passed today's data, no need to continue\n    break;\n  }\n}\n\n// Check if we found today's data\nif (todayStartIndex === -1) {\n  throw new Error(\"No temperature data found for today\");\n}\n\n// Extract today's temperatures\nconst todayTemps = tempArray.slice(todayStartIndex, todayEndIndex + 1);\n\n// Calculate high and low temperatures\nconst high = Math.max(...todayTemps);\nconst low = Math.min(...todayTemps);\n\n// Return the result in n8n format\nreturn {\n  high: high,\n  low: low,\n  unit: weatherData.hourly_units.temperature_2m,\n  date: todayDate,\n  numReadings: todayTemps.length\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        512
+      ],
+      "id": "7c9810a2-a8b3-4130-8ed1-3c790afc0df3",
+      "name": "Finding high and low"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appdyHXEL6Krf0uMd",
+          "mode": "list",
+          "cachedResultName": "Weather Center",
+          "cachedResultUrl": "https://airtable.com/appdyHXEL6Krf0uMd"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblATsqslpyYBDvBS",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appdyHXEL6Krf0uMd/tblATsqslpyYBDvBS"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Location": "={{ $('On form submission').item.json.Destination }}",
+            "High(F)": "={{ $json.high }}",
+            "Low(F)": "={{ $json.low }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "High(F)",
+              "displayName": "High(F)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Low(F)",
+              "displayName": "Low(F)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created",
+              "displayName": "Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1104,
+        512
+      ],
+      "id": "92b8866c-a3f2-426a-81d0-0f84b340f89e",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "N3sL9VZ7cJjtrlQM",
+          "name": "weather station data"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Chicago co-ordinates",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "miami co-ordinates1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "New york co-ordinates2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Phonyix co-ordinates3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chicago co-ordinates": {
+      "main": [
+        [
+          {
+            "node": "Weather pull",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "miami co-ordinates1": {
+      "main": [
+        [
+          {
+            "node": "Weather pull",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New york co-ordinates2": {
+      "main": [
+        [
+          {
+            "node": "Weather pull",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Phonyix co-ordinates3": {
+      "main": [
+        [
+          {
+            "node": "Weather pull",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Weather pull": {
+      "main": [
+        [
+          {
+            "node": "Finding high and low",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Finding high and low": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "cafc7027-2c96-49f5-ae1d-01f8a6411941",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "04df97ba6d1d9fe89bd0b869d771e2bc90e660e3389e7fa5a4ceb1d075780d6b"
+  },
+  "id": "yqrnnXuXib2Z2AWh",
+  "tags": []
+}

@@ -1,0 +1,419 @@
+{
+  "name": "🕷️ Universal Web Scraper + AI Extractor",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "=everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1N1N3GNqlBH9O7w5yz3fMEYbMRg_DoVVQskNgmPVQOww",
+          "mode": "list",
+          "cachedResultName": "urls ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N1N3GNqlBH9O7w5yz3fMEYbMRg_DoVVQskNgmPVQOww/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N1N3GNqlBH9O7w5yz3fMEYbMRg_DoVVQskNgmPVQOww/edit#gid=0"
+        },
+        "includeInOutput": "both",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        -48
+      ],
+      "id": "7cc01add-606d-49a4-ab75-d96dc5bf6db2",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "zT04fKYc1tzxLOek",
+          "name": "Google Sheets Trigger account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json['https://en.wikipedia.org/wiki/Detective_fiction'] }}",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -624,
+        -144
+      ],
+      "id": "57182f8f-23dc-4423-8c74-14f7a28085a7",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "{\n  \"url\": \"https://example.com/page1\",\n  \"title\": \"How AI is Changing Freelancing\",\n  \"author\": \"John Doe\",\n  \"date\": \"2025-07-08\",\n  \"summary\": \"This article explores how AI tools are reshaping freelancing workflows...\"\n}\n",
+        "options": {
+          "systemMessage": "From the page content, extract:\n- Title\n- Main content summary\n- Author (if any)\n- Date (if any)\nReturn as JSON.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        128,
+        -160
+      ],
+      "id": "b3d94a32-d794-4d1c-a022-77a191fbb667",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/o1-mini",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        128,
+        64
+      ],
+      "id": "7c8404b7-653f-47fa-b96e-61fbeda68af8",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "FGGEQhpqlLCbNUt3",
+          "name": "OpenRouter account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7886a367-9a87-455c-8dc8-81dc97a2ab34",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": "={{ $json.statusCode }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -368,
+        -144
+      ],
+      "id": "0dbd7c2c-528c-4b47-9ff8-d31d29e185b4",
+      "name": "If",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "errorMessage": "The given url is not supported or missates in the text pls check properly"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        48
+      ],
+      "id": "6a2509ed-4904-4e3a-8d97-679566d54be2",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -144,
+        -160
+      ],
+      "id": "d3590414-3ee2-4a75-b44b-44e13d586863",
+      "name": "Wait",
+      "webhookId": "aef6308d-7e2a-47d8-8c67-443e1665824c"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -800,
+        -48
+      ],
+      "id": "3d3bc8d2-96af-4fca-8168-4aea0faad62f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        80
+      ],
+      "id": "31a0b251-a727-4a9e-9e87-b8d6bc85c30d"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appNaMOEDql1OYvzT",
+          "mode": "list",
+          "cachedResultName": "URL data srapper",
+          "cachedResultUrl": "https://airtable.com/appNaMOEDql1OYvzT"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblGdHuGfeN9nSq83",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appNaMOEDql1OYvzT/tblGdHuGfeN9nSq83"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "publised on": 0
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "topic",
+              "displayName": "topic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "author",
+              "displayName": "author",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "publised on",
+              "displayName": "publised on",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Summary in two lines",
+              "displayName": "Summary in two lines",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        288,
+        64
+      ],
+      "id": "377ba7fb-2805-46f9-845d-a6d2be64c32b",
+      "name": "Create a record in Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "lzlN9C5qSbcPQ5Pw",
+          "name": "Airtable Personal Access Token account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 🧩 Suggested Fix Order:\n✅ Fix the IF node → Use {{ $json[\"statusCode\"] === 200 }}.\n\n🗂️ Replace \"Replace Me\" → With either:\n\nAdd Row in Google Sheets to save failed URLs\n\nOr send an error alert (like via email or Telegram)\n\n🧠 Connect AI Agent to a sheet logger → Let it write the output for proof-of-work.\n\n🔄 Optional: Add retry logic → Add a second loop to retry failed URLs after delay.\n\n🔕 API Tokens Monitoring → Add a token balance checker if you're using OpenAI or Groq etc.",
+        "height": 400,
+        "width": 540
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        560,
+        -208
+      ],
+      "typeVersion": 1,
+      "id": "4d04ed13-7042-4b0b-adcb-c3517a196480",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record in Airtable": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "85e68f4b-e584-4cca-9aab-a00bb13700dd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "04df97ba6d1d9fe89bd0b869d771e2bc90e660e3389e7fa5a4ceb1d075780d6b"
+  },
+  "id": "FcqJRER9IhQgEvUY",
+  "tags": []
+}

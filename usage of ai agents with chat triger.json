@@ -1,0 +1,278 @@
+{
+  "name": "usage of ai agents with chat triger",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -688,
+        -384
+      ],
+      "id": "0ab2cc0a-4ef2-452e-b94e-0b75b8dcf9bb",
+      "name": "When chat message received",
+      "webhookId": "fbfe2e9c-d20d-43de-80b2-9e39ca6779b8"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are a friendly and professional AI email assistant.  \nYou will always return your answers in valid JSON format using only double quotes.\n\nBased on the user’s request, generate the following:\n- A valid email address (key: \"email\")\n- A short subject line (key: \"subject\")\n- A friendly, polite email message (key: \"message\")\n\n⚠️ Format strictly like this:\n{\n  \"email\": \"client@example.com\",\n  \"subject\": \"Your Requested Update\",\n  \"message\": \"Hi! Just wanted to follow up on your request. Let me know if you have any questions!\"\n}\n\n💡 Notes:\n- The email field must look like a real email.\n- Avoid emojis, markdown, or extra words.\n- Do NOT return explanations, just the JSON block.\n- The message must be 1–3 sentences max.\n\nReady to receive a user query.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        -384
+      ],
+      "id": "1183b31b-60e7-4d0e-a1ca-3114dc58d332",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-3.5-turbo",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        -160
+      ],
+      "id": "6791e9f0-9f1d-48dd-8405-05824f1a15ed",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "5r6BvQ2edGEoTUKv",
+          "name": "OpenRouter account 3"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -336,
+        -160
+      ],
+      "id": "e57b1727-d95d-45d8-8e9d-1d915d442985",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        -384
+      ],
+      "id": "a8c9bbcc-9a67-4d97-a725-2e3b02e84419",
+      "name": "output"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "en-gb.indian#holiday@group.v.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "Holidays in India"
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        -160
+      ],
+      "id": "068e0528-ae9e-4f09-8019-858d411a3f8a",
+      "name": "Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "jLFU2Ty2ci7mBAMM",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "title": "hello"
+      },
+      "type": "n8n-nodes-base.googleSlidesTool",
+      "typeVersion": 2,
+      "position": [
+        -96,
+        -160
+      ],
+      "id": "bef86c3e-4923-47f1-b803-27a3345de94d",
+      "name": "Google Slides",
+      "credentials": {
+        "googleSlidesOAuth2Api": {
+          "id": "Hn79AEPNDA8QSzEq",
+          "name": "Google Slides account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "guruvenkat12007@gmail.com",
+        "subject": "hi",
+        "message": "hello",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        32,
+        -160
+      ],
+      "id": "23cb8aea-fcd7-45d8-ab9d-ae87d2774c8b",
+      "name": "Gmail",
+      "webhookId": "0c6e5134-6c08-4716-acf7-684b7720d317",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y62yUnwtuufyHFPM",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTool",
+      "typeVersion": 3,
+      "position": [
+        144,
+        -160
+      ],
+      "id": "1f1cf329-50d6-4382-a0c8-6988edc5f8f1",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "vJlVHdCaPGEfXuRs",
+          "name": "Google Drive account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Slides": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "55a04512-37f4-455a-af02-5a59c4f284c1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "04df97ba6d1d9fe89bd0b869d771e2bc90e660e3389e7fa5a4ceb1d075780d6b"
+  },
+  "id": "qtv4I6YtMlmOWjl0",
+  "tags": []
+}

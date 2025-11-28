@@ -1,0 +1,240 @@
+{
+  "name": "event search and information suggestion",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1088,
+        -160
+      ],
+      "id": "09d88678-25d7-4802-b752-54d1313da5c1",
+      "name": "Watching inbox👀",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ex79YT5qDw9SQk74",
+          "name": "Gmail account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -864,
+        -160
+      ],
+      "id": "d1fca1a1-3cfb-46dd-8839-2cb91b6a001b",
+      "name": "Getting details⚡",
+      "webhookId": "82bee4d3-6933-4fdd-9fe9-109ab91eb053",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ex79YT5qDw9SQk74",
+          "name": "Gmail account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Searches events in Google Calendar.",
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "guruvenkat12007@gmail.com",
+          "mode": "list",
+          "cachedResultName": "guruvenkat12007@gmail.com"
+        },
+        "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('After', ``, 'string') }}",
+        "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Before', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -704,
+        288
+      ],
+      "id": "2a1ca649-94c7-41b0-aa01-1ee80d2c7649",
+      "name": "Search_events",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "SD1yqEQ8RNy8Wbv3",
+          "name": "Google Calendar account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-3.5-turbo-16k",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        288
+      ],
+      "id": "620cdc73-fad3-4acd-8b6a-6d5edab05155",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "OIBIoRDTaT5CEy92",
+          "name": "OpenRouter account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get goals from the Airtable database by searching records.",
+        "base": {
+          "__rl": true,
+          "value": "appRqAJiRnRwAvKiC",
+          "mode": "list",
+          "cachedResultName": "Goals Workspace",
+          "cachedResultUrl": "https://airtable.com/appRqAJiRnRwAvKiC"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblawQ6pJjsOnNa66",
+          "mode": "list",
+          "cachedResultName": "Goals",
+          "cachedResultUrl": "https://airtable.com/appRqAJiRnRwAvKiC/tblawQ6pJjsOnNa66"
+        },
+        "id": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        -400,
+        160
+      ],
+      "id": "d16ca6ee-4d95-45a0-939f-3af8cbad2af2",
+      "name": "goals_database",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "fOk8j3ZRVoDTxwHB",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=to:\n {{ $json.To }}\nSubject:\n{{ $json.Subject }}\nMessage:\n{{ $json.snippet }}",
+        "options": {
+          "systemMessage": "=You are an intelligent personal email assistant.\nYour role is to categorize and respond to incoming emails based on the user's availability (via calendar) and alignment with their personal goals (via database).\n\nYou have access to the following tools:\n\nSearch_events: Use this to check the user’s Google Calendar for availability before drafting responses related to meetings, events, or calls.\n\ngoals_database: Use this to query the user’s Airtable-stored goals. Ensure your email responses reflect and align with these priorities.\n\nAlways verify both availability and alignment before generating a reply."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -864,
+        48
+      ],
+      "id": "3dbfaf85-0977-4915-8a5c-68b2f1c1a6d0",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 660,
+        "width": 860,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1136,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "f0339ad6-1342-436f-bcb6-96dc3bd12b40",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Watching inbox👀": {
+      "main": [
+        [
+          {
+            "node": "Getting details⚡",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Getting details⚡": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search_events": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "goals_database": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3580b6a0-bddf-45fb-8e4e-7816bf3f8091",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "04df97ba6d1d9fe89bd0b869d771e2bc90e660e3389e7fa5a4ceb1d075780d6b"
+  },
+  "id": "2WwUKB6KKncYBE45",
+  "tags": []
+}

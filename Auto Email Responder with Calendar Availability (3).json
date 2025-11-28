@@ -1,0 +1,382 @@
+{
+  "name": "Auto Email Responder with Calendar Availability",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1008,
+        48
+      ],
+      "id": "9fe337a7-793a-411e-8516-b894dbdeb9cf",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ex79YT5qDw9SQk74",
+          "name": "Gmail account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -800,
+        48
+      ],
+      "id": "1ed7b94c-f4ff-42e0-b87f-47a73763ad0b",
+      "name": "Get a message",
+      "webhookId": "3dabc7d5-3713-4d97-9d88-0f7d7da9bc60",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ex79YT5qDw9SQk74",
+          "name": "Gmail account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are my AI Email Assistant.\n\n🎯 First, check my Google Calendar (via `search_events`) to see if I’m free on the date/time mentioned in the email.\n\n📌 Then check my goals in Airtable (via `goals_database`) to see if the topic aligns with what I’m working on.\n\n📧 If both pass, write and send a polite confirmation email (via `send_reply`).  \n🚫 If not, politely decline the request, giving a short reason.\n\nIncoming Email:\n\"{{ $json.snippet || $json.payload?.headers?.find(header => header.name === 'Subject')?.value || 'No email content available' }}\"\n\nYou are my AI Email Assistant.\n\nCheck the content of the incoming email.\n\n1. Use `search_events` to check my availability on the **date/time mentioned** in the email.\n2. Use `goals_database` to determine whether the email's topic aligns with my current goals.\n3. Based on the results:\n   - If I’m **free** AND the topic is **goal-aligned**, draft and send a friendly, short response via `send_reply`.\n   - If I’m **busy** OR the topic is **not aligned**, politely decline using `send_reply`.\n\nAlways follow this exact tool order:\n   1. `search_events`\n   2. `goals_database`\n   3. `send_reply`\n\nHere's the email:\n\"Hey, are you available Friday afternoon for a quick chat about a new automation idea for solopreneurs?\"\n\n\n",
+        "options": {
+          "systemMessage": "You are a highly intelligent and polite email assistant.\nYour job is to categorize, analyze, and respond to incoming emails on behalf of the user, based on their current availability (Google Calendar) and personal goals (Airtable Goals Database).\n\nYou have access to the following tools:\n\n🗓️ search_events: Check if the user is free on a specific date/time by scanning Google Calendar. Always use this before suggesting a meeting or confirming availability.\n\n🎯 goals_database: Review the user's goals to decide whether a request or task aligns with what the user is focusing on. Reject or reframe requests that are not aligned.\n\n📧 Send_reply: Send a human-like, thoughtful email response through Gmail based on context, goals, and calendar availability.\n\n🧩 Behavioral Rules:\n\nAlways prioritize clarity, professionalism, and friendliness in your replies.\n\nDo not accept meetings if there is a conflict in the calendar.\n\nDo not say yes to tasks that fall outside of the user's current goals.\n\nIf possible, suggest alternatives or referrals when declining.\n\nUse concise but personalized language in replies. Mention the sender’s name if available.\n\n🧪 Example Flow:\n\nEmail: \"Hey can we meet Wednesday at 3PM to talk about a marketing funnel?\"\n\ngoals_database: Finds no match for “marketing funnel” in goals → ⚠️ Not aligned\n\nsearch_events: Finds a calendar clash at 3PM → ❌ Busy\n\nSend_reply:\n\"Hey there! I truly appreciate you reaching out. I’m currently focused on automation projects and unavailable at that time. Wishing you the best for your funnel setup!\"\n\n\"tools_to_use\": [\"search_events\", \"goals_database\", \"send_reply\"]\n\n expected output format like:\n{\n  \"status\": \"respond\" | \"reject\",\n  \"subject\": \"string\",\n  \"to\": \"string\",\n  \"message\": \"string\",\n  \"reason\": \"optional\"\n}\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -624,
+        48
+      ],
+      "id": "3eaab234-c2bc-440a-a194-c77d07c6ea09",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "This tool checks availability in the Google Calendar.\nInput should include a date or time range extracted from the email. Returns whether the user is available at that time.\n",
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "guruvenkat12007@gmail.com",
+          "mode": "list",
+          "cachedResultName": "guruvenkat12007@gmail.com"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        -128
+      ],
+      "id": "d6c74242-6295-4063-b934-4d33dc233070",
+      "name": "search_events",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "SD1yqEQ8RNy8Wbv3",
+          "name": "Google Calendar account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "This tool queries user's current goals in Airtable.\nProvide a keyword/topic (like 'automation') to check if it's part of user’s goals.\n",
+        "base": {
+          "__rl": true,
+          "value": "appRqAJiRnRwAvKiC",
+          "mode": "list",
+          "cachedResultName": "Goals Workspace",
+          "cachedResultUrl": "https://airtable.com/appRqAJiRnRwAvKiC"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblawQ6pJjsOnNa66",
+          "mode": "list",
+          "cachedResultName": "Goals",
+          "cachedResultUrl": "https://airtable.com/appRqAJiRnRwAvKiC/tblawQ6pJjsOnNa66"
+        },
+        "id": "recCPmTRDKBvuyJEW",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        -224,
+        64
+      ],
+      "id": "49fb0cc4-ee46-488f-9eb6-9b613021134a",
+      "name": "goals_database",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Eox16GMqXu2HUosz",
+          "name": "Airtable Personal Access Token account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "=📧 Send Email Tool – Description\nThis tool is responsible for sending customized, context-aware email replies through the user's Gmail account. It takes AI-generated responses (based on calendar availability and goal alignment) and delivers them directly to the original sender.\n\n💡 Additional Field Notes (for reference):\nTo: Automatically pulled from the original email (dynamic).\n\nSubject: Mirrors the original or is modified based on context.\n\nEmail Type: Set to HTML for better formatting.\n\nMessage Body: Crafted by the AI agent using user’s goals + availability.\n\n🧠 Optional Alternative (if you're pitching it to a client):\nSends intelligent, human-like email responses automatically. It ensures the reply reflects your availability and professional priorities without you lifting a finger.",
+        "sendTo": "={{ $json.From }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -224,
+        240
+      ],
+      "id": "b5f2f03b-7435-4347-8491-f5ff93481062",
+      "name": "Send_reply",
+      "webhookId": "6339cb11-0cbf-449d-abf4-cb8da3dafa29",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ex79YT5qDw9SQk74",
+          "name": "Gmail account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-chat",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        272
+      ],
+      "id": "ecbe63b3-cb76-43f5-ac18-38902cd9a46b",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "sqcbCN0VNfCBEHJ3",
+          "name": "OpenRouter account 7"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## TOOLS",
+        "height": 540,
+        "width": 220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        -160
+      ],
+      "typeVersion": 1,
+      "id": "7513c667-6c8e-44ff-b3ae-3e8ac2c33131",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## 1. 🕵️‍♂️ Email Time/Date Extraction\nProblem: Your AI looks for static times like “Friday afternoon.”\n\nImprovement: Add a Date/Time extractor (either with regex or a Language Model tool) before search_events.\n\nGoal: Accurately parse things like:\n\n“Tomorrow at 3PM”\n\n“Next Monday morning”\n\n“July 12th, 4–5PM”\n\n",
+        "height": 300,
+        "width": 720,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1920,
+        -384
+      ],
+      "typeVersion": 1,
+      "id": "9020e040-7d18-46f2-9ee5-4f550858508b",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## 2. 🛡️ Fallback Handling for Vague Emails\nProblem: If an email doesn’t mention a time or clear topic, the agent can get confused.\n\nImprovement: Add a fallback logic or standard polite response like:\n\n“Could you please share more details or preferred time?”\n\nHow: You can use a conditional check node, or build it into the agent's prompt using if not date/topic.\n\n",
+        "height": 200,
+        "width": 720
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1920,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "1f515b64-7372-4dee-90cb-86035f477c18",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## 3. 🧾 Logging System (Optional but Powerful)\nIdea: Track every incoming email + decision made (accepted, rejected, message sent).\n\nTool: Google Sheets node or Airtable \"History Log\" table.\n\nFields to log:\n\nEmail subject\n\nSender\n\nTime proposed\n\nGoal match: Yes/No\n\nStatus: Accepted / Rejected\n\nFinal response",
+        "height": 400,
+        "width": 720,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1920,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "44d89d02-aa3a-4e89-a302-ebbb3e199655",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## 4. 🔄 Batch Processing Mode (Future Upgrade)\nInstead of real-time reply, schedule batch responses every hour/day.\n\nThis way, your agent acts more like a “real assistant,” not a bot.\n\n",
+        "width": 600,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        -320
+      ],
+      "typeVersion": 1,
+      "id": "837f8c8d-2a45-433c-b9d0-357267fd343c",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## 5. 🎨 Make Subject Line Dynamic & Smart\nRight now, you let the subject mirror the incoming one.\n\nLater, build subject logic like:\n\nIf accepted → \"Re: [Topic] – Confirmed\"\n\nIf rejected → \"Re: [Topic] – Not Available\"\n\n",
+        "height": 200,
+        "width": 600,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        -128
+      ],
+      "typeVersion": 1,
+      "id": "d79c865f-90f6-4faa-b04f-f3c25c326f53",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## 6. 🧠 Fine-tuned Prompts Based on Persona\nWant to sound more casual? Or professional? Or like Koro-sensei?\nYou can update the systemMessage and tone to reflect:\n\n🤵 Business Professional\n\n😎 Friendly Tech Founder\n\n💡 Quirky AI Nerd (Koro-style)",
+        "height": 220,
+        "width": 600,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "ef8864c6-8327-4a04-ba38-d3e3f1c65b29",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "##EXECUTION FLOW:\n1. Trigger\n2. Fetch Email\n3. AI Agent → 3 Tools\n4. Smart Reply\n",
+        "width": 180,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1104,
+        -304
+      ],
+      "typeVersion": 1,
+      "id": "8f91fe5f-10ea-4a81-8d1b-cd45da2ce4f7",
+      "name": "Sticky Note7"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a message": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search_events": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "goals_database": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send_reply": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4e0c4698-d9d8-4b0c-bca9-a54640bf3d75",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "04df97ba6d1d9fe89bd0b869d771e2bc90e660e3389e7fa5a4ceb1d075780d6b"
+  },
+  "id": "GhurOthOjIhZn8s3",
+  "tags": []
+}

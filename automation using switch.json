@@ -1,0 +1,262 @@
+{
+  "name": "automation using switch",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Quick form",
+        "formDescription": "just basic details about yourself",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Full name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Age",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email Id",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "how are u feeling now",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Happy"
+                  },
+                  {
+                    "option": "Clam"
+                  },
+                  {
+                    "option": "Sad"
+                  }
+                ]
+              },
+              "multiselect": true,
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -464,
+        -64
+      ],
+      "id": "e91337f9-1ac5-4743-ab4a-c1653096fc19",
+      "name": "On form submission",
+      "webhookId": "8fe985ea-18c9-4c1d-acca-993bfc60a154"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['how are u feeling now'][0] }}",
+                    "rightValue": "Happy",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "543c0089-b080-4209-9309-0089fed0fe30"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "90ce6bba-0ad2-460c-915a-6b9af8e1abde",
+                    "leftValue": "={{ $json['how are u feeling now'][0] }}",
+                    "rightValue": "calm",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "357b645a-dd6b-495b-a905-e97ab76379ab",
+                    "leftValue": "={{ $json['how are u feeling now'][0] }}",
+                    "rightValue": "sad",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -240,
+        -64
+      ],
+      "id": "6306c6c1-da6c-490b-804f-503187090f77",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Email Id'] }}",
+        "subject": "HI",
+        "message": "Its good to hear",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        -176
+      ],
+      "id": "4dd65f64-5dd2-4ef7-8900-c6c7b34beae1",
+      "name": "Send a message",
+      "webhookId": "f0e76696-7389-4875-87d1-4d0dfcf738f3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y62yUnwtuufyHFPM",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Email Id'] }}",
+        "subject": "HI",
+        "message": "TRY TO BE LITTLE MORE HAPPY",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        112,
+        -48
+      ],
+      "id": "93140703-cbbb-4ed8-9391-a4880e762c36",
+      "name": "Send a message1",
+      "webhookId": "f0e76696-7389-4875-87d1-4d0dfcf738f3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y62yUnwtuufyHFPM",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Email Id'] }}",
+        "subject": "HI",
+        "message": "DONT WORRY BE HAPPY",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        80
+      ],
+      "id": "f9452cc4-4eb3-4b76-9081-f3bc67edb3a1",
+      "name": "Send a message2",
+      "webhookId": "f0e76696-7389-4875-87d1-4d0dfcf738f3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y62yUnwtuufyHFPM",
+          "name": "Gmail account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "24a0e577-aa07-4fb2-a224-3e5d35a48d45",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "04df97ba6d1d9fe89bd0b869d771e2bc90e660e3389e7fa5a4ceb1d075780d6b"
+  },
+  "id": "fSckMvI6I9lUH13j",
+  "tags": []
+}

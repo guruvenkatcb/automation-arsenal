@@ -1,0 +1,302 @@
+{
+  "name": "Auto-save email attachements to google drive",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -688,
+        -48
+      ],
+      "id": "9850555a-3059-4b82-a077-fc8a9d847e29",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ex79YT5qDw9SQk74",
+          "name": "Gmail account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6a236077-db6c-445f-9242-e90afc87edc0",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "interview",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": "={{ true }}"
+        }
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        -48
+      ],
+      "id": "b020b5e9-7bf8-47fa-9e9f-6d888fbf477c",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -64,
+        -48
+      ],
+      "id": "7efc5ef0-40a8-44ed-82f3-5c2ccbf9c866",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -16
+      ],
+      "id": "051bf551-1b87-4a79-b847-4537f9760cbc"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -464,
+        -48
+      ],
+      "id": "0d60641e-263c-4f6d-8d0b-1a776de811c9",
+      "name": "Get many messages",
+      "webhookId": "469f1534-bd47-4146-9e30-fd6cc2d90004",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ex79YT5qDw9SQk74",
+          "name": "Gmail account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appPdIYMPWGDz3r6D",
+          "mode": "list",
+          "cachedResultName": "email scrapper",
+          "cachedResultUrl": "https://airtable.com/appPdIYMPWGDz3r6D"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblIKP0vixlGEswe4",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appPdIYMPWGDz3r6D/tblIKP0vixlGEswe4"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "snnipet": "={{ $json.snippet }}",
+            "subject": "={{ $json.Subject }}",
+            "from": "={{ $json.From }}",
+            "id": "={{ $json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "snnipet",
+              "displayName": "snnipet",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "when it came",
+              "displayName": "when it came",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Attachments",
+              "displayName": "Attachments",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        144,
+        -176
+      ],
+      "id": "b24ccde5-e2ec-4ada-a6ee-beca36562a94",
+      "name": "Create or update a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "RcPiWitUmVxhs7Yc",
+          "name": "Airtable Personal Access Token account 6"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Create or update a record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "da76fa3b-e143-45ff-b778-d62ba83345a3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "04df97ba6d1d9fe89bd0b869d771e2bc90e660e3389e7fa5a4ceb1d075780d6b"
+  },
+  "id": "39zD5V9vaKmqr7G7",
+  "tags": []
+}
